@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Models\Patient;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Request;
 
 class PatientController extends Controller
 {
@@ -15,7 +17,28 @@ class PatientController extends Controller
      */
     public function index()
     {
-        //
+        $patients = Patient::query()
+            ->when(Request::input('search'), function ($query, $search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            })
+            ->orderBy('last_name', 'ASC')
+            ->paginate(10)
+            ->withQueryString()
+            ->through(fn ($patient) => [
+                'id' => $patient->id,
+                'name' => $patient->last_name . ' ' . $patient->first_name,
+                'gender' => $patient->gender === 0 ? 'Male' : 'Female',
+                'birth_date' => $patient->birth_date,
+                'birth_place' => $patient->birth_place,
+            ]);
+
+
+        return Inertia::render('Patients/Index', [
+            'patients' => $patients,
+            'filters' => Request::only(['search'])
+        ]);
+
     }
 
     /**

@@ -16,13 +16,12 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+    return Inertia::render('Home');
+})->name('home');
+
+Route::middleware(['auth'])->group(fn () =>
+    Route::resource('patients', \App\Http\Controllers\PatientController::class),
+);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
