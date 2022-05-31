@@ -27,9 +27,9 @@
                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                     <template v-for="(link, key) in links">
                         <div v-if="link.url === null" :key="key"></div>
-                        <InertiaLink v-else :key="key"
-                                      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-                                      :class="{ 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600': link.active }" :href="link.url" v-html="link.label"
+                        <InertiaLink v-else
+                                     class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                                     :class="{ 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600': link.active }" :href="link.url" v-html="link.label"
                         />
                     </template>
                 </nav>

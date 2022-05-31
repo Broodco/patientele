@@ -14,7 +14,9 @@
                     <p class="mt-2 text-sm text-gray-700">A list of all your patients.</p>
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                    <button type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add patient</button>
+                    <Link :href="'/patients/create'">
+                        <button type="button" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add patient</button>
+                    </Link>
                 </div>
             </div>
             <div class="-mx-4 mt-8 overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 md:rounded-lg">
@@ -36,19 +38,20 @@
 
 <script>
 import SideBarLayout from '@/Layouts/SideBarLayout';
-import { Head } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 import DataTable from '@/Components/DataTable';
 import Pagination from '@/Components/Pagination';
 import Searchbar from "@/Components/Searchbar";
 
 export default {
-    name: "Patients",
+    name: "Patients.Index",
     components: {
         SideBarLayout,
         Head,
         DataTable,
         Pagination,
         Searchbar,
+        Link,
     },
 
     props: {

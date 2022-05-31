@@ -13,16 +13,26 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
+        request()->validate([
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:name,gender,birth_date,birth_place']
+        ]);
+
         $patients = Patient::query()
             ->when(Request::input('search'), function ($query, $search) {
                 $query->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%");
             })
-            ->orderBy('last_name', 'ASC')
+            ->when(Request::input('field'), function ($query) {
+                $query->when(Request::input('direction'), function ($query, $direction) {
+                    $field = Request::input('field') === 'name' ? 'last_name' : Request::input('field');
+                    $query->orderBy(($field), $direction);
+                });
+            })
             ->paginate(10)
             ->withQueryString()
             ->through(fn ($patient) => [
@@ -33,10 +43,11 @@ class PatientController extends Controller
                 'birth_place' => $patient->birth_place,
             ]);
 
-
         return Inertia::render('Patients/Index', [
             'patients' => $patients,
-            'filters' => Request::only(['search'])
+            'filters' => Request::only(['search']),
+            'field' => Request::only(['field']),
+            'direction' => Request::only(['direction'])
         ]);
 
     }
@@ -59,18 +70,27 @@ class PatientController extends Controller
      */
     public function store(StorePatientRequest $request)
     {
-        //
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Patient  $patient
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function show(Patient $patient)
     {
-        //
+        return Inertia::render('Patients/Show', [
+            'patient' => [
+                'id' => $patient->id,
+                'first_name' => $patient->first_name,
+                'last_name' => $patient->last_name,
+                'address' => ucwords($patient->address),
+                'gender' => $patient->gender === 0 ? 'Male' : 'Female',
+                'birth_date' => $patient->birth_date,
+                'birth_place' => $patient->birth_place
+            ]
+        ]);
     }
 
     /**
